@@ -1,5 +1,5 @@
-import { MainNav } from "@/components/main-nav";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { MainNav } from "@/components/home/main-nav";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 export function SiteHeader() {
   return (
