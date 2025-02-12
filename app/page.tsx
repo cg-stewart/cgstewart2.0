@@ -10,6 +10,7 @@ import { BackToTopButton } from "@/components/home/back-to-top-button";
 import { SubscriptionForm } from "@/components/home/subscription-form";
 import { ExternalLink, Github } from "lucide-react";
 import { AnimatedElement } from "@/components/animated-element";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -254,7 +255,7 @@ export default function Home() {
             </div>
             <div className="mt-10 text-center">
               <Button asChild>
-                <a href="/blog">Read More Posts</a>
+                <Link href="/blog">Read More Posts</Link>
               </Button>
             </div>
           </CardContent>
@@ -346,7 +347,7 @@ export default function Home() {
             </div>
             <div className="mt-10 text-center">
               <Button variant="outline" asChild>
-                <a href="/projects">View All Projects</a>
+                <Link href="/projects">View All Projects</Link>
               </Button>
             </div>
           </CardContent>
@@ -411,14 +412,14 @@ export default function Home() {
                       </div>
                       <div className="group relative">
                         <h3 className="mt-3 text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-                          <a
+                          <Link
                             href={video.videoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
                             <span className="absolute inset-0" />
                             {video.title}
-                          </a>
+                          </Link>
                         </h3>
                       </div>
                     </div>
@@ -428,7 +429,7 @@ export default function Home() {
             </div>
             <div className="mt-10 text-center">
               <Button variant="outline" asChild>
-                <a href="/videos">View All Videos</a>
+                <Link href="/videos">View All Videos</Link>
               </Button>
             </div>
           </CardContent>
@@ -444,26 +445,6 @@ export default function Home() {
           <p className="text-sm text-gray-500">
             © 2024 CG Stewart. All rights reserved.
           </p>
-          <nav className="flex gap-4">
-            <a
-              href="/privacy"
-              className="text-sm text-gray-500 hover:text-gray-600"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="/terms"
-              className="text-sm text-gray-500 hover:text-gray-600"
-            >
-              Terms of Service
-            </a>
-            <a
-              href="/contact"
-              className="text-sm text-gray-500 hover:text-gray-600"
-            >
-              Contact
-            </a>
-          </nav>
         </div>
       </footer>
       <div className="block md:hidden">
