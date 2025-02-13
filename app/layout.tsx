@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import { SiteHeader } from "@/components/home/site-header";
+import SiteHeader from "@/components/home/site-header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

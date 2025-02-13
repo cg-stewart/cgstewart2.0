@@ -1,90 +1,86 @@
 import { relations } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import {
-  pgTable,
+  sqliteTable,
   text,
-  timestamp,
-  boolean,
   integer,
-  jsonb,
-  serial,
-} from 'drizzle-orm/pg-core';
+  blob,
+} from 'drizzle-orm/sqlite-core';
 
-export const profiles = pgTable('profiles', {
+export const profiles = sqliteTable('profiles', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   about: text('about').notNull(),
   photo: text('photo').notNull(),
-  links: jsonb('links').$type<{
-    github: string;
-    twitter: string;
-    linkedin: string;
-  }>().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  links: text('links').notNull(), // JSON stored as text
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const workHistory = pgTable('work_history', {
+export const workHistory = sqliteTable('work_history', {
   id: text('id').primaryKey(),
   company: text('company').notNull(),
   position: text('position').notNull(),
   period: text('period').notNull(),
   description: text('description').notNull(),
   order: integer('order').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const projects = pgTable('projects', {
+export const projects = sqliteTable('projects', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   description: text('description').notNull(),
-  techStack: text('tech_stack').array().notNull(),
+  techStack: text('tech_stack').notNull(), // Array stored as JSON string
   image: text('image').notNull(),
-  isCurrent: boolean('is_current').default(false).notNull(),
-  slug: text('slug').unique().notNull(),
-  viewCount: integer('view_count').default(0).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  isCurrent: integer('is_current', { mode: 'boolean' }).notNull().default(0),
+  slug: text('slug').notNull(),
+  viewCount: integer('view_count').notNull().default(0),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const posts = pgTable('posts', {
+export const posts = sqliteTable('posts', {
   id: text('id').primaryKey(),
   title: text('title').notNull(),
   excerpt: text('excerpt').notNull(),
   content: text('content').notNull(),
   author: text('author').notNull(),
-  publishedAt: timestamp('published_at'),
-  isDraft: boolean('is_draft').default(true).notNull(),
-  tags: text('tags').array().notNull(),
+  publishedAt: integer('published_at', { mode: 'timestamp' }),
+  isDraft: integer('is_draft', { mode: 'boolean' }).notNull().default(1),
+  tags: text('tags').notNull(), // Array stored as JSON string
   category: text('category').notNull(),
-  slug: text('slug').unique().notNull(),
-  viewCount: integer('view_count').default(0).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  slug: text('slug').notNull(),
+  viewCount: integer('view_count').notNull().default(0),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const videos = pgTable('videos', {
+export const videos = sqliteTable('videos', {
   id: text('id').primaryKey(),
   title: text('title').notNull(),
   description: text('description').notNull(),
   youtubeUrl: text('youtube_url').notNull(),
-  keywords: text('keywords').array().notNull(),
-  slug: text('slug').unique().notNull(),
-  viewCount: integer('view_count').default(0).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  keywords: text('keywords').notNull(), // Array stored as JSON string
+  slug: text('slug').notNull(),
+  viewCount: integer('view_count').notNull().default(0),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const comments = pgTable('comments', {
+export const comments = sqliteTable('comments', {
   id: text('id').primaryKey(),
   content: text('content').notNull(),
-  postId: text('post_id').notNull().references(() => posts.id, { onDelete: 'cascade' }),
+  postId: text('post_id')
+    .notNull()
+    .references(() => posts.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull(), // Clerk user ID
   userEmail: text('user_email').notNull(), // Clerk user email
   userName: text('user_name').notNull(), // Clerk user name
   userImage: text('user_image'), // Optional Clerk user image
-  isApproved: boolean('is_approved').default(false).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  isApproved: integer('is_approved', { mode: 'boolean' }).notNull().default(0),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Relations
@@ -98,3 +94,11 @@ export const commentsRelations = relations(comments, ({ one }) => ({
     references: [posts.id],
   }),
 }));
+
+export const subscribers = sqliteTable('subscribers', {
+  id: text('id').primaryKey(),
+  email: text('email').notNull(),
+  preferences: text('preferences').notNull(), // JSON stored as text
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull().default(sql`CURRENT_TIMESTAMP`),
+});
