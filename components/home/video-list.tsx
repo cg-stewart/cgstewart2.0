@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AnimatedElement } from "@/components/animated-element";
@@ -48,9 +49,11 @@ export default function VideoList() {
               <AnimatedElement key={video.id} delay={1.1 + index * 0.1}>
                 <article className="flex flex-col items-start justify-between">
                   <div className="relative w-full">
-                    <img
+                    <Image
                       src={video.thumbnailUrl}
                       alt=""
+                      width={800}
+                      height={450}
                       className="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover"
                     />
                     <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10" />

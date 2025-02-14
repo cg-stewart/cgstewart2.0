@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Github } from "lucide-react";
@@ -48,9 +49,10 @@ export default function ProjectList() {
             {projects.map((project, index) => (
               <AnimatedElement key={project.id} delay={0.9 + index * 0.1}>
                 <article className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 px-8 pb-8 pt-80 sm:pt-48 lg:pt-80 space-y-4">
-                  <img
+                  <Image
                     src={project.imageUrl}
                     alt=""
+                    fill
                     className="absolute inset-0 -z-10 h-full w-full object-cover"
                   />
                   <div className="absolute inset-0 -z-10 bg-gradient-to-t from-gray-900 via-gray-900/40" />

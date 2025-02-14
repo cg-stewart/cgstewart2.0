@@ -12,11 +12,7 @@ import {
   projectSchema,
   postSchema,
   videoSchema,
-  type Profile,
-  type WorkHistory,
-  type Project,
-  type Post,
-  type Video,
+
 } from '@/lib/validations/portfolio'
 
 async function verifyAdmin() {
@@ -25,7 +21,7 @@ async function verifyAdmin() {
 
   const user = await currentUser()
   const githubAccount = user?.externalAccounts?.find(
-    (account: { provider: string; username: string }) => 
+    (account) => 
       account.provider === "github" && 
       account.username === "cg-stewart"
   )
@@ -41,9 +37,13 @@ export async function updateProfile(input: unknown) {
   await db.insert(profiles).values({
     ...data,
     id: data.id || nanoid(),
+    links: JSON.stringify(data.links),
   }).onConflictDoUpdate({
     target: profiles.id,
-    set: data,
+    set: {
+      ...data,
+      links: JSON.stringify(data.links)
+    },
   })
   revalidatePath('/dashboard/profile')
   revalidatePath('/')
@@ -96,10 +96,15 @@ export async function createProject(input: unknown) {
   await verifyAdmin()
   const data = projectSchema.parse(input)
   
-  await db.insert(projects).values({
-    ...data,
+  const insertData = {
+    ...Object.fromEntries(
+      Object.entries(data).filter(([key]) => key !== 'techStack')
+    ),
     id: nanoid(),
-  })
+    techStack: JSON.stringify(data.techStack)
+  }
+  
+  await db.insert(projects).values(insertData as any)
   revalidatePath('/dashboard/projects')
   revalidatePath('/projects')
 }
@@ -108,8 +113,19 @@ export async function updateProject(id: string, input: unknown) {
   await verifyAdmin()
   const data = projectSchema.partial().parse(input)
   
+  const updateData: Record<string, unknown> = {
+    ...Object.fromEntries(
+      Object.entries(data).filter(([key]) => key !== 'techStack')
+    ),
+    updatedAt: new Date(),
+  }
+  
+  if ('techStack' in data && data.techStack) {
+    updateData.techStack = JSON.stringify(data.techStack)
+  }
+  
   await db.update(projects)
-    .set({ ...data, updatedAt: new Date() })
+    .set(updateData as any)
     .where(eq(projects.id, id))
   revalidatePath('/dashboard/projects')
   revalidatePath('/projects')
@@ -131,10 +147,15 @@ export async function createPost(input: unknown) {
   await verifyAdmin()
   const data = postSchema.parse(input)
   
-  await db.insert(posts).values({
-    ...data,
+  const insertData = {
+    ...Object.fromEntries(
+      Object.entries(data).filter(([key]) => key !== 'tags')
+    ),
     id: nanoid(),
-  })
+    tags: JSON.stringify(data.tags)
+  }
+  
+  await db.insert(posts).values(insertData as any)
   revalidatePath('/dashboard/posts')
   revalidatePath('/blog')
 }
@@ -143,8 +164,19 @@ export async function updatePost(id: string, input: unknown) {
   await verifyAdmin()
   const data = postSchema.partial().parse(input)
   
+  const updateData: Record<string, unknown> = {
+    ...Object.fromEntries(
+      Object.entries(data).filter(([key]) => key !== 'tags')
+    ),
+    updatedAt: new Date(),
+  }
+  
+  if ('tags' in data && data.tags) {
+    updateData.tags = JSON.stringify(data.tags)
+  }
+  
   await db.update(posts)
-    .set({ ...data, updatedAt: new Date() })
+    .set(updateData as any)
     .where(eq(posts.id, id))
   revalidatePath('/dashboard/posts')
   revalidatePath('/blog')
@@ -168,10 +200,15 @@ export async function createVideo(input: unknown) {
   await verifyAdmin()
   const data = videoSchema.parse(input)
   
-  await db.insert(videos).values({
-    ...data,
+  const insertData = {
+    ...Object.fromEntries(
+      Object.entries(data).filter(([key]) => key !== 'keywords')
+    ),
     id: nanoid(),
-  })
+    keywords: JSON.stringify(data.keywords)
+  }
+  
+  await db.insert(videos).values(insertData as any)
   revalidatePath('/dashboard/videos')
   revalidatePath('/videos')
 }
@@ -180,8 +217,19 @@ export async function updateVideo(id: string, input: unknown) {
   await verifyAdmin()
   const data = videoSchema.partial().parse(input)
   
+  const updateData: Record<string, unknown> = {
+    ...Object.fromEntries(
+      Object.entries(data).filter(([key]) => key !== 'keywords')
+    ),
+    updatedAt: new Date(),
+  }
+  
+  if ('keywords' in data && data.keywords) {
+    updateData.keywords = JSON.stringify(data.keywords)
+  }
+  
   await db.update(videos)
-    .set({ ...data, updatedAt: new Date() })
+    .set(updateData as any)
     .where(eq(videos.id, id))
   revalidatePath('/dashboard/videos')
   revalidatePath('/videos')

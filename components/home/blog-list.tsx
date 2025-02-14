@@ -79,9 +79,11 @@ export default function BlogList() {
               <AnimatedElement key={post.id} delay={0.7 + index * 0.1}>
                 <article className="flex flex-col items-start justify-between">
                   <div className="relative w-full">
-                    <img
+                    <Image
                       src={post.imageUrl}
                       alt=""
+                      width={800}
+                      height={600}
                       className="aspect-[16/9] w-full rounded-2xl bg-gray-100 object-cover sm:aspect-[2/1] lg:aspect-[3/2]"
                     />
                     <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-900/10" />
@@ -110,9 +112,11 @@ export default function BlogList() {
                       </p>
                     </div>
                     <div className="relative mt-8 flex items-center gap-x-4">
-                      <img
+                      <Image
                         src={post.author.imageUrl}
                         alt=""
+                        width={40}
+                        height={40}
                         className="h-10 w-10 rounded-full bg-gray-100"
                       />
                       <div className="text-sm leading-6">
