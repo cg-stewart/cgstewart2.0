@@ -96,15 +96,15 @@ export async function createProject(input: unknown) {
   await verifyAdmin()
   const data = projectSchema.parse(input)
   
+  const { techStack, ...rest } = data
+  
   const insertData = {
-    ...Object.fromEntries(
-      Object.entries(data).filter(([key]) => key !== 'techStack')
-    ),
+    ...rest,
     id: nanoid(),
-    techStack: JSON.stringify(data.techStack)
+    techStack: JSON.stringify(techStack)
   }
   
-  await db.insert(projects).values(insertData as any)
+  await db.insert(projects).values(insertData)
   revalidatePath('/dashboard/projects')
   revalidatePath('/projects')
 }
@@ -113,19 +113,16 @@ export async function updateProject(id: string, input: unknown) {
   await verifyAdmin()
   const data = projectSchema.partial().parse(input)
   
-  const updateData: Record<string, unknown> = {
-    ...Object.fromEntries(
-      Object.entries(data).filter(([key]) => key !== 'techStack')
-    ),
-    updatedAt: new Date(),
-  }
+  const { techStack, ...rest } = data
   
-  if ('techStack' in data && data.techStack) {
-    updateData.techStack = JSON.stringify(data.techStack)
-  }
+  const updateData = {
+    ...rest,
+    updatedAt: new Date(),
+    ...(techStack ? { techStack: JSON.stringify(techStack) } : {})
+  } as const
   
   await db.update(projects)
-    .set(updateData as any)
+    .set(updateData)
     .where(eq(projects.id, id))
   revalidatePath('/dashboard/projects')
   revalidatePath('/projects')
@@ -147,15 +144,15 @@ export async function createPost(input: unknown) {
   await verifyAdmin()
   const data = postSchema.parse(input)
   
+  const { tags, ...rest } = data
+  
   const insertData = {
-    ...Object.fromEntries(
-      Object.entries(data).filter(([key]) => key !== 'tags')
-    ),
+    ...rest,
     id: nanoid(),
-    tags: JSON.stringify(data.tags)
+    tags: JSON.stringify(tags)
   }
   
-  await db.insert(posts).values(insertData as any)
+  await db.insert(posts).values(insertData)
   revalidatePath('/dashboard/posts')
   revalidatePath('/blog')
 }
@@ -164,19 +161,16 @@ export async function updatePost(id: string, input: unknown) {
   await verifyAdmin()
   const data = postSchema.partial().parse(input)
   
-  const updateData: Record<string, unknown> = {
-    ...Object.fromEntries(
-      Object.entries(data).filter(([key]) => key !== 'tags')
-    ),
-    updatedAt: new Date(),
-  }
+  const { tags, ...rest } = data
   
-  if ('tags' in data && data.tags) {
-    updateData.tags = JSON.stringify(data.tags)
-  }
+  const updateData = {
+    ...rest,
+    updatedAt: new Date(),
+    ...(tags ? { tags: JSON.stringify(tags) } : {})
+  } as const
   
   await db.update(posts)
-    .set(updateData as any)
+    .set(updateData)
     .where(eq(posts.id, id))
   revalidatePath('/dashboard/posts')
   revalidatePath('/blog')
@@ -200,15 +194,15 @@ export async function createVideo(input: unknown) {
   await verifyAdmin()
   const data = videoSchema.parse(input)
   
+  const { keywords, ...rest } = data
+  
   const insertData = {
-    ...Object.fromEntries(
-      Object.entries(data).filter(([key]) => key !== 'keywords')
-    ),
+    ...rest,
     id: nanoid(),
-    keywords: JSON.stringify(data.keywords)
+    keywords: JSON.stringify(keywords)
   }
   
-  await db.insert(videos).values(insertData as any)
+  await db.insert(videos).values(insertData)
   revalidatePath('/dashboard/videos')
   revalidatePath('/videos')
 }
@@ -217,19 +211,16 @@ export async function updateVideo(id: string, input: unknown) {
   await verifyAdmin()
   const data = videoSchema.partial().parse(input)
   
-  const updateData: Record<string, unknown> = {
-    ...Object.fromEntries(
-      Object.entries(data).filter(([key]) => key !== 'keywords')
-    ),
-    updatedAt: new Date(),
-  }
+  const { keywords, ...rest } = data
   
-  if ('keywords' in data && data.keywords) {
-    updateData.keywords = JSON.stringify(data.keywords)
-  }
+  const updateData = {
+    ...rest,
+    updatedAt: new Date(),
+    ...(keywords ? { keywords: JSON.stringify(keywords) } : {})
+  } as const
   
   await db.update(videos)
-    .set(updateData as any)
+    .set(updateData)
     .where(eq(videos.id, id))
   revalidatePath('/dashboard/videos')
   revalidatePath('/videos')
